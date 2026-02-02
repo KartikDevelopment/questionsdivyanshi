@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>React in Plain HTML</title>
+
+    <!-- React & ReactDOM (CDN) -->
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+
+    <!-- Babel (for JSX support in browser) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f3f4f6;
+      }
+      .card {
+        background: white;
+        padding: 24px;
+        border-radius: 12px;
+        width: 80%;
+        height: 50vh; /* 70% of viewport height */
+        margin: 100px auto;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      button {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 8px;
+        background: black;
+        color: white;
+        cursor: pointer;
+      }
+      @keyframes pop {
+        0% {
+          transform: scale(0);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.2);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- React mounts here -->
+    <div id="root"></div>
+
+    <!-- React code -->
+    <script type="text/babel">
+      function App() {
+        const Questions = [
+          "Where was our first Kiss?",
+          "How much do I Love?",
+          "Who Loves More?",
+          "What is the best gift you can give me?",
+          "What is the best moment of us?",
+          "Will you be mine Valentine?",
+        ];
+
+        const Answers = [
+          [
+            { text: "Forest", correct: false, video: "no.mp4" },
+            { text: "Cafe", correct: true },
+            { text: "My Flat", correct: false, video: "no.mp4" },
+            { text: "Car", correct: false, video: "no.mp4" },
+          ],
+          [
+            { text: "Bhot Sara", correct: false, video: "oho.mp4" },
+            { text: "Thoda sa", correct: false, video: "punch_me.mp4" },
+            { text: "Thoda sa bhi nhi", correct: false, video: "punch_me.mp4" },
+            { text: "102 kg", correct: true },
+          ],
+          [
+            { text: "Kartik", correct: true },
+            { text: "You're BF", correct: true },
+            { text: "No one 🥲", correct: false, video: "hehe.mp4" },
+            { text: "Divyanshi", correct: false, video: "tounge.mp4" },
+          ],
+          [
+            { text: "Flowers", correct: false, video: "no.mp4" },
+            { text: "Chocolate", correct: false, video: "no.mp4" },
+            { text: "PS5", correct: false, video: "no.mp4" },
+            { text: "You're kiss", correct: true, video: "no.mp4" },
+          ],
+          [
+            { text: "Dates in Forest", correct: false, video: "shy.mp4" },
+            { text: "Moments in Car", correct: false, video: "watching.mp4" },
+            { text: "Kiss in Mandir", correct: true },
+            { text: "Sofa 😪", correct: false, video: "oho.mp4" },
+          ],
+          [
+            { text: "Yes ❤️", correct: true },
+            { text: "No 💔", correct: false, video: "haww.mp4" },
+          ],
+        ];
+
+        const [index, setIndex] = React.useState(0);
+        const [selected, setSelected] = React.useState(null);
+        const [celebrate, setCelebrate] = React.useState(false);
+        const [showVideo, setShowVideo] = React.useState(false);
+        const [videoSrc, setVideoSrc] = React.useState();
+        const [completed, setCompleted] = React.useState(false);
+        function handleAnswer(ans) {
+          // if (selected) return; // prevent double click
+          // setSelected(ans);
+          if (!ans.correct) {
+            setVideoSrc(ans.video);
+            setShowVideo(true);
+            return;
+          }
+          if (ans.correct) {
+            setCelebrate(true);
+
+            setTimeout(() => {
+              setCelebrate(false);
+              setSelected(null);
+              setIndex((i) => Math.min(i + 1, Questions.length - 1));
+            }, 3000);
+          }
+        }
+
+        function prevQuestion() {
+          setSelected(null);
+          setIndex((i) => Math.max(i - 1, 0));
+        }
+
+        return (
+          <div className="card" style={{ position: "relative" }}>
+            <h3>{Questions[index]}</h3>
+            {showVideo && (
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "black",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  zIndex: 10,
+                }}
+              >
+                <video
+                  src={videoSrc}
+                  autoPlay
+                  muted
+                  onEnded={() => {
+                    setShowVideo(false); // hide video
+                  }}
+                  controls={false}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </div>
+            )}
+            {index == Questions.length - 1 && (
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "black",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  zIndex: 10,
+                }}
+              >
+                <video
+                  src={"kiss.mp4"}
+                  autoPlay
+                  muted
+                  onEnded={() => {
+                    setCompleted(true); // hide video
+                  }}
+                  controls={false}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </div>
+            )}
+            {completed && (
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "black",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  zIndex: 10,
+                }}
+              >
+                <h4 style={{ color: "white" }}>Send Photos 😤</h4>
+                <button
+                  onClick={() => {
+                    setIndex(0);
+                    setCompleted(false);
+                  }}
+                >
+                  Restart
+                </button>
+              </div>
+            )}
+            <div style={{ marginTop: "16px" }}>
+              {Answers[index].map((ans, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleAnswer(ans)}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    marginBottom: "8px",
+                    background:
+                      selected === ans
+                        ? ans.correct
+                          ? "#16a34a"
+                          : "#dc2626"
+                        : "#000",
+                  }}
+                >
+                  {ans.text}
+                </button>
+              ))}
+            </div>
+
+            <button onClick={prevQuestion} disabled={index === 0}>
+              Prev
+            </button>
+
+            {celebrate && (
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "40px",
+                  animation: "pop 1s ease",
+                  pointerEvents: "none",
+                }}
+              >
+                🎉💖🎉
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+
+    <!-- <script type="text/babel"> -->
+    <!-- function App() {
+        const Questions = [
+          "Where was our first Kiss?",
+          "How much do I Love?",
+          "Who Loves More?",
+          "What is the best gift you can give me?",
+          "What is the best moment of us?",
+          "Will you be mine Valentine?",
+        ];
+
+        const Answers = [
+          [
+            { text: "Forest", correct: false },
+            { text: "Cafe", correct: true },
+            { text: "My Flat", correct: false },
+            { text: "Car", correct: false },
+          ],
+          [
+            { text: "Bhot Sara", correct: false },
+            { text: "Thoda sa", correct: false },
+            { text: "Thoda sa bhi nhi", correct: false },
+            { text: "102 kg", correct: true },
+          ],
+          [
+            { text: "Kartik", correct: true },
+            { text: "You're BF", correct: true },
+            { text: "No one 🥲", correct: false },
+            { text: "Divyanshi", correct: false },
+          ],
+          [
+            { text: "Flowers", correct: false },
+            { text: "Chocolate", correct: false },
+            { text: "PS5", correct: false },
+            { text: "You're kiss", correct: true },
+          ],
+          [
+            { text: "Dates in Forest", correct: false },
+            { text: "Moments in Car", correct: false },
+            { text: "Kiss in Mandir", correct: false },
+            { text: "Sofa 😪", correct: true },
+          ],
+          [
+            { text: "Yes ❤️", correct: true },
+            { text: "No 💔", correct: false },
+          ],
+        ];
+
+        const [index, setIndex] = React.useState(0);
+        const [selected, setSelected] = React.useState(null);
+
+        function nextQuestion() {
+          setSelected(null);
+          setIndex((prev) => Math.min(prev + 1, Questions.length - 1));
+        }
+
+        function prevQuestion() {
+          setSelected(null);
+          setIndex((prev) => Math.max(prev - 1, 0));
+        }
+
+        return (
+          <div className="card">
+            <h3>{Questions[index]}</h3>
+
+            <div style={{ marginTop: "16px" }}>
+              {Answers[index].map((ans, i) => (
+                <button
+                  key={i}
+                  onClick={() => setSelected(ans)}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    marginBottom: "8px",
+                    background:
+                      selected === ans
+                        ? ans.correct
+                          ? "#16a34a"
+                          : "#dc2626"
+                        : "#000",
+                  }}
+                >
+                  {ans.text}
+                </button>
+              ))}
+            </div>
+
+            <div style={{ marginTop: "16px", display: "flex", gap: "8px" }}>
+              <button onClick={prevQuestion} disabled={index === 0}>
+                Prev
+              </button>
+              <button
+                onClick={nextQuestion}
+                disabled={index === Questions.length - 1}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script> -->
+  </body>
+</html>
