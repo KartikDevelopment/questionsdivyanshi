@@ -141,7 +141,7 @@
 
         return (
           <div className="card" style={{ position: "relative" }}>
-            <h3>{Questions[index]}</h3>
+            <h1>{Questions[index]}</h1>
             {showVideo && (
               <div
                 style={{
@@ -213,26 +213,58 @@
                 </button>
               </div>
             )}
-            <div style={{ marginTop: "16px" }}>
-              {Answers[index].map((ans, i) => (
-                <button
-                  key={i}
-                  onClick={() => handleAnswer(ans)}
-                  style={{
-                    display: "block",
-                    width: "100%",
-                    marginBottom: "8px",
-                    background:
-                      selected === ans
-                        ? ans.correct
-                          ? "#16a34a"
-                          : "#dc2626"
-                        : "#000",
-                  }}
-                >
-                  {ans.text}
-                </button>
-              ))}
+            <div
+              style={{
+                marginTop: "12px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+              }}
+            >
+              <div
+                style={{
+                  marginTop: "12px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "12px",
+                  justifyContent: "center ",
+                  alignItems: "center",
+                  padding: "20px",
+                }}
+              >
+                {Answers[index].map((ans, i) => {
+                  const isSelected = selected === ans;
+
+                  return (
+                    <div
+                      key={i}
+                      onClick={() => handleAnswer(ans)}
+                      style={{
+                        padding: "16px",
+                        borderRadius: "16px",
+                        width: "40%",
+                        background: isSelected
+                          ? ans.correct
+                            ? "#22c55e"
+                            : "#ef4444"
+                          : "#f8fafc",
+                        color: isSelected ? "white" : "#111",
+                        fontSize: "24px",
+                        fontWeight: 800,
+                        textAlign: "center",
+                        cursor: "pointer",
+                        transition: "all 0.25s ease",
+                        boxShadow: isSelected
+                          ? "0 10px 25px rgba(0,0,0,0.25)"
+                          : "0 4px 10px rgba(0,0,0,0.12)",
+                        border: "1px solid #e5e7eb",
+                      }}
+                    >
+                      {ans.text}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
             <button onClick={prevQuestion} disabled={index === 0}>
